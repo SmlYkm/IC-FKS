@@ -90,7 +90,9 @@ def process_video(
     height = int(src_video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(src_video.get(cv2.CAP_PROP_FPS))
     total_frames = int(src_video.get(cv2.CAP_PROP_FRAME_COUNT))
-    if start_frame and end_frame:
+    if end_frame is None:
+        total_frames = total_frames - start_frame
+    else:
         total_frames = end_frame - start_frame
 
     # Set the starting frame
@@ -106,14 +108,14 @@ def process_video(
     # Process frames
     for i in range(total_frames):
         progress =  i / total_frames * 100
-        print(f"Processessing frame {i}/{total_frames} ({progress:.2f}%)", end="\r")
+        print(f"Processing frame {i}/{total_frames} ({progress:.2f}%)", end="\r")
 
         ret, frame = src_video.read()
         if not ret:
             print("End of video stream")
             break
 
-        # Process the frame
+        # Process frame
         frame = process_frame(frame)
         output_video.write(frame)
 
